@@ -168,12 +168,14 @@ function Product(props) {
 
 	function canBeSubmitted() {
 		console.log(form);
-		return form.product_name.length > 0 &&
+		return (
+			form.product_name.length > 0 &&
 			form.description.length > 0 &&
 			form.category_id.length > 0 &&
-			form.subcat_id
-			? form.subcat_id.length > 0
-			: true && !_.isEqual(product.data, form);
+			(form.subcat_id ? form.subcat_id.length > 0 : true) &&
+			form.images.length > 0 &&
+			!_.isEqual(product.data, form)
+		);
 	}
 
 	const fetchCategories = async () => {
