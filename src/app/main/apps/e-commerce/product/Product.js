@@ -24,6 +24,7 @@ import withReducer from "app/store/withReducer";
 import * as Actions from "../store/actions";
 import reducer from "../store/reducers";
 import axios from "axios";
+import AWS from "aws-sdk";
 
 const useStyles = makeStyles((theme) => ({
 	formControl: {
@@ -76,7 +77,13 @@ function Product(props) {
 	const [categories, setCategories] = useState([]);
 	const [subcategories, setSubcategories] = useState([]);
 	const { form, handleChange, setForm } = useForm(null);
-
+	useEffect(() => {
+		//configuring the AWS environment
+		AWS.config.update({
+			accessKeyId: "AKIAILVU3EZSDE7OZX2A",
+			secretAccessKey: "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"
+		});
+	}, []);
 	useEffect(() => {
 		if (form) {
 			const fetchSubcategories = async () => {
@@ -131,14 +138,33 @@ function Product(props) {
 		setForm(_.set({ ...form }, "featuredImageId", id));
 	}
 
-	function handleUploadChange(e) {
+	const handleUploadChange = async (e) => {
 		const file = e.target.files[0];
+		console.log(file);
+
 		if (!file) {
 			return;
 		}
+		const gcsname = new Date().toISOString() + "-" + file.filename;
 
-		setForm(_.set({ ...form }, `images`, [file, ...form.images]));
-	}
+		let s3, params;
+
+		s3 = new AWS.S3();
+
+		const options = { partSize: 10 * 1024 * 1024, queueSize: 1 };
+		var folder = "product-images";
+		params = {
+			Bucket: "brandedbaba-bucket",
+			Body: file,
+			Key: `${folder}/${gcsname}`,
+			ContentType: file.type,
+			ACL: "public-read"
+		};
+
+		const response = await s3.upload(params, options).promise();
+
+		setForm(_.set({ ...form }, `images`, [response.Location, ...form.images]));
+	};
 
 	function canBeSubmitted() {
 		console.log(form);
@@ -232,9 +258,7 @@ function Product(props) {
 								className='whitespace-no-wrap'
 								variant='contained'
 								disabled={!canBeSubmitted()}
-								onClick={() =>
-									dispatch(Actions.saveProduct({ ...form, files: form.images }))
-								}>
+								onClick={() => dispatch(Actions.saveProduct({ form }))}>
 								Save
 							</Button>
 						</FuseAnimate>
