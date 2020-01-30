@@ -64,7 +64,6 @@ export function createUserSettingsFirebase(authUser) {
  * Set User Data
  */
 export function setUserData(user) {
-	console.log(user);
 	return (dispatch) => {
 		/*
         Set User Settings

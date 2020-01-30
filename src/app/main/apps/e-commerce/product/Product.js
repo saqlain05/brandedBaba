@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import { orange } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/styles";
-import { FuseAnimate, FusePageCarded, FuseChipSelect, FuseUtils } from "@fuse";
+import { FuseAnimate, FusePageCarded, FuseChipSelect } from "@fuse";
 import { useForm } from "@fuse/hooks";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
@@ -78,8 +78,22 @@ function Product(props) {
 	const { form, handleChange, setForm } = useForm(null);
 
 	useEffect(() => {
+		if (form) {
+			const fetchSubcategories = async () => {
+				const response = await axios.get(
+					`http://13.233.225.39/api/category/${form.category_id}/subcategories`
+				);
+				const data = response.data.subcategories;
+				console.log(data);
+				setSubcategories(data);
+			};
+			if (form.category_id) fetchSubcategories();
+		}
+	}, [form]);
+
+	useEffect(() => {
 		fetchCategories();
-		if (categories.length > 0) fetchSubcategories();
+
 		function updateProductState() {
 			const params = props.match.params;
 			const { productId } = params;
@@ -122,42 +136,24 @@ function Product(props) {
 		if (!file) {
 			return;
 		}
-		const reader = new FileReader();
-		reader.readAsBinaryString(file);
 
-		reader.onload = () => {
-			setForm(
-				_.set({ ...form }, `images`, [
-					{
-						id: FuseUtils.generateGUID(),
-						url: `data:${file.type};base64,${btoa(reader.result)}`,
-						type: "image"
-					},
-					...form.images
-				])
-			);
-		};
-
-		reader.onerror = function() {
-			console.log("error on load image");
-		};
+		setForm(_.set({ ...form }, `images`, [file, ...form.images]));
 	}
 
 	function canBeSubmitted() {
-		return form.product_name.length > 0 && !_.isEqual(product.data, form);
+		console.log(form);
+		return form.product_name.length > 0 &&
+			form.description.length > 0 &&
+			form.category_id.length > 0 &&
+			form.subcat_id
+			? form.subcat_id.length > 0
+			: true && !_.isEqual(product.data, form);
 	}
 
 	const fetchCategories = async () => {
 		const response = await axios.get("http://13.233.225.39/api/category");
 		const data = response.data.categories;
 		setCategories(data);
-	};
-	const fetchSubcategories = async () => {
-		const response = await axios.get(
-			`http://13.233.225.39/api/categories/${form.category_id}/subcategories`
-		);
-		const data = response.data.subcategories;
-		setSubcategories(data);
 	};
 
 	const renderCategories = () => {
@@ -173,7 +169,7 @@ function Product(props) {
 		return subcategories.map((category) => {
 			return (
 				<MenuItem key={category.id} value={category.id}>
-					{category.category_name}
+					{category.subcategory_name}
 				</MenuItem>
 			);
 		});
@@ -236,7 +232,9 @@ function Product(props) {
 								className='whitespace-no-wrap'
 								variant='contained'
 								disabled={!canBeSubmitted()}
-								onClick={() => dispatch(Actions.saveProduct(form))}>
+								onClick={() =>
+									dispatch(Actions.saveProduct({ ...form, files: form.images }))
+								}>
 								Save
 							</Button>
 						</FuseAnimate>
@@ -256,7 +254,6 @@ function Product(props) {
 					<Tab className='h-64 normal-case' label='Product Images' />
 					<Tab className='h-64 normal-case' label='Pricing' />
 					<Tab className='h-64 normal-case' label='Inventory' />
-					<Tab className='h-64 normal-case' label='Shipping' />
 				</Tabs>
 			}
 			content={
@@ -280,6 +277,7 @@ function Product(props) {
 
 								<TextField
 									className='mt-8 mb-16'
+									required
 									id='description'
 									name='description'
 									onChange={handleChange}
@@ -291,9 +289,23 @@ function Product(props) {
 									variant='outlined'
 									fullWidth
 								/>
+								<TextField
+									className='mt-8 mb-16'
+									error={form.seller === ""}
+									required
+									label='Seller Name'
+									autoFocus
+									id='seller'
+									name='seller'
+									value={form.seller}
+									onChange={handleChange}
+									variant='outlined'
+									fullWidth
+								/>
 								<FormControl className={classes.formControl}>
 									<InputLabel id='category_id-label'>Category</InputLabel>
 									<Select
+										required
 										id='category_id'
 										name='category_id'
 										value={form.category_id}
@@ -303,13 +315,14 @@ function Product(props) {
 									</Select>
 								</FormControl>
 								<br />
-								{form.category_id ? (
+								{form.category_id.length !== 0 ? (
 									<FormControl className={classes.formControl}>
 										<InputLabel id='category_id-label'>Sub Category</InputLabel>
 										<Select
-											id='subcategory_id'
-											name='subcategory_id'
-											value={form.subcategory_id}
+											required
+											id='subcat_id'
+											name='subcat_id'
+											value={form.subcat_id}
 											onChange={handleChange}
 											className={classes.selectEmpty}>
 											{renderSubcategories()}
@@ -326,6 +339,23 @@ function Product(props) {
 									placeholder='Select multiple highlights'
 									textFieldProps={{
 										label: "Tags",
+										InputLabelProps: {
+											shrink: true
+										},
+										variant: "outlined"
+									}}
+									isMulti
+								/>
+								<FuseChipSelect
+									className='mt-8 mb-16'
+									value={form.specs.split(",").map((item) => ({
+										value: item,
+										label: item
+									}))}
+									onChange={(value) => handleChipChange(value, "specs")}
+									placeholder='Select multiple specs'
+									textFieldProps={{
+										label: "Specs",
 										InputLabelProps: {
 											shrink: true
 										},
@@ -357,7 +387,7 @@ function Product(props) {
 									</label>
 									{form.images.map((media) => (
 										<div
-											onClick={() => setFeaturedImage(media.id)}
+											onClick={() => setFeaturedImage(media)}
 											className={clsx(
 												classes.productImageItem,
 												"flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5",
@@ -450,72 +480,24 @@ function Product(props) {
 										</MenuItem>
 									</Select>
 								</FormControl>
-							</div>
-						)}
-						{tabValue === 4 && (
-							<div>
-								<div className='flex'>
-									<TextField
-										className='mt-8 mb-16 mr-8'
-										label='Width'
-										autoFocus
-										id='width'
-										name='width'
-										value={form.width}
-										onChange={handleChange}
-										variant='outlined'
-										fullWidth
-									/>
-
-									<TextField
-										className='mt-8 mb-16 mr-8'
-										label='Height'
-										id='height'
-										name='height'
-										value={form.height}
-										onChange={handleChange}
-										variant='outlined'
-										fullWidth
-									/>
-
-									<TextField
-										className='mt-8 mb-16 mr-8'
-										label='Depth'
-										id='depth'
-										name='depth'
-										value={form.depth}
-										onChange={handleChange}
-										variant='outlined'
-										fullWidth
-									/>
+								<div>
+									<FormControl className={classes.formControl}>
+										<InputLabel id='is_verified-label'>Is Verified</InputLabel>
+										<Select
+											id='is_verified'
+											name='is_verified'
+											value={form.is_verified}
+											onChange={handleChange}
+											className={classes.selectEmpty}>
+											<MenuItem key={"True"} value={true}>
+												True
+											</MenuItem>
+											<MenuItem key={"False"} value={false}>
+												False
+											</MenuItem>
+										</Select>
+									</FormControl>
 								</div>
-
-								<TextField
-									className='mt-8 mb-16'
-									label='Weight'
-									id='weight'
-									name='weight'
-									value={form.weight}
-									onChange={handleChange}
-									variant='outlined'
-									fullWidth
-								/>
-
-								<TextField
-									className='mt-8 mb-16'
-									label='Extra Shipping Fee'
-									id='extraShippingFee'
-									name='extraShippingFee'
-									value={form.extraShippingFee}
-									onChange={handleChange}
-									variant='outlined'
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position='start'>$</InputAdornment>
-										)
-									}}
-									fullWidth
-								/>
 							</div>
 						)}
 					</div>

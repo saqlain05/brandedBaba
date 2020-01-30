@@ -1,5 +1,4 @@
 import axios from "axios";
-import { FuseUtils } from "@fuse";
 import { showMessage } from "app/store/actions/fuse";
 
 export const GET_PRODUCT = "[E-COMMERCE APP] GET PRODUCT";
@@ -33,25 +32,25 @@ export function saveProduct(id, data) {
 
 export function newProduct() {
 	const data = {
-		id: FuseUtils.generateGUID(),
-		name: "",
-		handle: "",
+		product_name: "",
 		description: "",
-		categories: [],
-		tags: [],
+		type: "",
 		images: [],
-		priceTaxExcl: 0,
-		priceTaxIncl: 0,
-		taxRate: 0,
-		comparedPrice: 0,
-		quantity: 0,
-		sku: "",
-		width: "",
-		height: "",
-		depth: "",
-		weight: "",
-		extraShippingFee: 0,
-		active: true
+		category_id: "",
+		subcat_id: "",
+		inStock: false,
+		seller: "",
+		stars: 0,
+		likes: 0,
+		total_reviews: 0,
+		mrp: 0,
+		discounted_price: 0,
+		discount: 0,
+		values: 0,
+		highlights: "",
+		specs: "",
+		is_verified: false,
+		sizes: []
 	};
 
 	return {
