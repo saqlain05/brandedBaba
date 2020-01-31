@@ -33,5 +33,4 @@ for server in "${ALL_SERVERS[@]}"
 do
   echo "deploying to ${server}"
   scp -r build/ ubuntu@${server}:~/admin-panel
-  ssh ubuntu@${server} 'bash' < ./deploy/updateAndRestart.sh
 done
