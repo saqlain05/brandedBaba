@@ -10,7 +10,6 @@ import {
 } from "@material-ui/core";
 import { FuseScrollbars } from "@fuse";
 import { withRouter } from "react-router-dom";
-import clsx from "clsx";
 import _ from "@lodash";
 import ProductsTableHead from "./ProductsTableHead";
 import * as Actions from "../store/actions";
@@ -180,7 +179,7 @@ function ProductsTable(props) {
 										</TableCell>
 
 										<TableCell className='truncate' component='th' scope='row'>
-											{n.category}
+											{n.category.category_name}
 										</TableCell>
 
 										<TableCell component='th' scope='row' align='right'>
@@ -188,17 +187,12 @@ function ProductsTable(props) {
 										</TableCell>
 
 										<TableCell component='th' scope='row' align='right'>
-											{n.quantity}
-											<i
-												className={clsx(
-													"inline-block w-8 h-8 rounded ml-8",
-													n.quantity <= 5 && "bg-red",
-													n.quantity > 5 && n.quantity <= 25 && "bg-orange",
-													n.quantity > 25 && "bg-green"
-												)}
-											/>
+											{n.is_verified ? (
+												<Icon className='text-green text-20'>check_circle</Icon>
+											) : (
+												<Icon className='text-red text-20'>remove_circle</Icon>
+											)}
 										</TableCell>
-
 										<TableCell component='th' scope='row' align='right'>
 											{n.inStock ? (
 												<Icon className='text-green text-20'>check_circle</Icon>

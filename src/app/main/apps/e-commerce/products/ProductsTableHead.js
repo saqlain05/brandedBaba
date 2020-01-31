@@ -47,17 +47,17 @@ const rows = [
 		sort: true
 	},
 	{
-		id: "quantity",
+		id: "is_verified",
 		align: "right",
 		disablePadding: false,
-		label: "Quantity",
+		label: "Is Verified",
 		sort: true
 	},
 	{
-		id: "In Stock",
+		id: "inStock",
 		align: "right",
 		disablePadding: false,
-		label: "Active",
+		label: "In Stock",
 		sort: true
 	}
 ];
