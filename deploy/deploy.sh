@@ -32,5 +32,5 @@ echo "ALL_SERVERS ${ALL_SERVERS}"
 for server in "${ALL_SERVERS[@]}"
 do
   echo "deploying to ${server}"
-  scp -r dist/ ubuntu@${server}:~/admin-panel
+  scp -r build/ ubuntu@${server}:~/admin-panel
 done

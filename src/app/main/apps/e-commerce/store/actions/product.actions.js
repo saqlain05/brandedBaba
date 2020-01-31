@@ -16,9 +16,28 @@ export function getProduct(id) {
 		});
 }
 
-export function saveProduct(form) {
-	console.log(form);
-	const request = axios.post(`http://localhost:8000/api/products`, form);
+export function saveProduct(data) {
+	var postData = {
+		product_name: data.product_name,
+		description: data.description,
+		featuredImageId: data.featuredImageId,
+		images: data.images,
+		category_id: data.category_id,
+		sub_subcat_id: data.sub_subcat_id,
+		subcat_id: data.subcat_id,
+		inStock: data.inStock,
+		seller: data.seller,
+		stars: data.stars,
+		likes: data.likes,
+		total_reviews: data.total_reviews,
+		mrp: data.mrp,
+		discounted_price: data.discounted_price,
+		discount: data.discount,
+		highlights: data.highlights,
+		is_verified: data.is_verified,
+		sizes: data.sizes
+	};
+	const request = axios.post(`http://localhost:8000/api/products`, postData);
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -81,9 +100,9 @@ export function newProduct() {
 		stars: 0,
 		likes: 0,
 		total_reviews: 0,
-		mrp: "0",
-		discounted_price: "0",
-		discount: "0",
+		mrp: 0,
+		discounted_price: 0,
+		discount: 0,
 		highlights: [],
 		is_verified: false,
 		sizes: ["small"]
