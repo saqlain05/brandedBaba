@@ -40,7 +40,7 @@ const rows = [
 		sort: true
 	},
 	{
-		id: "priceTaxIncl",
+		id: "mrp",
 		align: "right",
 		disablePadding: false,
 		label: "Price",

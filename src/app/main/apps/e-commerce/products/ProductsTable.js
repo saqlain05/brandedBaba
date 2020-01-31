@@ -120,8 +120,14 @@ function ProductsTable(props) {
 							[
 								(o) => {
 									switch (order.id) {
+										case "name": {
+											return o.category.product_name;
+										}
 										case "categories": {
-											return o.categories[0];
+											return o.category.category_name;
+										}
+										case "mrp": {
+											return o.category.price;
 										}
 										default: {
 											return o[order.id];
