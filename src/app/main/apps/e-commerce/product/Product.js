@@ -405,7 +405,6 @@ function Product(props) {
 								<FormControl className={classes.formControl}>
 									<InputLabel id='demo-mutiple-chip-label'>Chip</InputLabel>
 									<Select
-										labelId='demo-mutiple-chip-label'
 										id='demo-mutiple-chip'
 										multiple
 										value={form.sizes}

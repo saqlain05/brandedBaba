@@ -5,7 +5,7 @@ export const SET_PRODUCTS_SEARCH_TEXT =
 	"[E-COMMERCE APP] SET PRODUCTS SEARCH TEXT";
 
 export function getProducts() {
-	const request = axios.get("http://13.233.225.39/api/products");
+	const request = axios.get("http://13.235.187.206/api/products");
 
 	return (dispatch) =>
 		request.then((response) =>
