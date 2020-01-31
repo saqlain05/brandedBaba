@@ -19,7 +19,7 @@ export function getProduct(id) {
 export function saveProduct(data) {
 	console.log(data);
 	const request = axios.post(
-		`http://localhost:8000/api/products/${data.id}`,
+		`http://13.233.225.39/api/products/${data.id}`,
 		data
 	);
 
@@ -37,7 +37,7 @@ export function saveProduct(data) {
 export function updateProduct(data) {
 	console.log(data);
 	const request = axios.put(
-		`http://localhost:8000/api/products/${data.id}`,
+		`http://13.233.225.39/api/products/${data.id}`,
 		data
 	);
 
