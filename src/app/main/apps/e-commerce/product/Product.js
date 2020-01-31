@@ -10,9 +10,7 @@ import {
 	InputLabel,
 	Select,
 	MenuItem,
-	FormControl,
-	Input,
-	Chip
+	FormControl
 } from "@material-ui/core";
 import { orange } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/styles";
@@ -27,16 +25,6 @@ import * as Actions from "../store/actions";
 import reducer from "../store/reducers";
 import axios from "axios";
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-	PaperProps: {
-		style: {
-			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-			width: 250
-		}
-	}
-};
 const useStyles = makeStyles((theme) => ({
 	formControl: {
 		margin: theme.spacing(1),
@@ -86,25 +74,13 @@ function Product(props) {
 	const classes = useStyles(props);
 	const [tabValue, setTabValue] = useState(0);
 	const [categories, setCategories] = useState([]);
-	const [subcategories, setSubcategories] = useState([]);
 	const { form, handleChange, setForm } = useForm(null);
 
 	useEffect(() => {
-		if (form) {
-			const fetchSubcategories = async () => {
-				const response = await axios.get(
-					`http://13.233.225.39/api/category/${form.category_id}/subcategories`
-				);
-				const data = response.data.subcategories;
-				setSubcategories(data);
-			};
-			if (form.category_id) fetchSubcategories();
-		}
-	}, [form]);
+		fetchCategories();
+	}, []);
 
 	useEffect(() => {
-		fetchCategories();
-
 		function updateProductState() {
 			const params = props.match.params;
 			const { productId } = params;
@@ -128,20 +104,17 @@ function Product(props) {
 		}
 	}, [form, product.data, setForm]);
 
-	const handleChangeMultiple = (event) => {
-		const { value } = event.target;
-
-		console.log(value);
-		setForm(_.set({ ...form }, "sizes", value));
-	};
-
 	function handleChangeTab(event, tabValue) {
 		setTabValue(tabValue);
 	}
 
 	function handleChipChange(value, name) {
 		setForm(
-			_.set({ ...form }, name, value.map((item) => item.value).join(","))
+			_.set(
+				{ ...form },
+				name,
+				value.map((item) => item.value)
+			)
 		);
 	}
 
@@ -158,7 +131,7 @@ function Product(props) {
 		const formData = new FormData();
 		formData.append("file", file);
 		const response = await axios.post(
-			"http://localhost:8000/api/save-product-image",
+			"http://13.235.187.206/api/save-product-image",
 			formData
 		);
 		setForm(
@@ -178,9 +151,11 @@ function Product(props) {
 	}
 
 	const fetchCategories = async () => {
-		const response = await axios.get("http://13.233.225.39/api/category");
+		console.log("call");
+		const response = await axios.get("http://13.235.187.206/api/category");
 		const data = response.data.categories;
 		setCategories(data);
+		console.log(data);
 	};
 
 	const renderCategories = () => {
@@ -193,13 +168,34 @@ function Product(props) {
 		});
 	};
 	const renderSubcategories = () => {
-		return subcategories.map((category) => {
-			return (
-				<MenuItem key={category.id} value={category.id}>
-					{category.subcategory_name}
-				</MenuItem>
-			);
-		});
+		return categories
+			.filter((category) => {
+				return category.id === form.category_id;
+			})[0]
+			.subcategories.map((subcategory) => {
+				return (
+					<MenuItem key={subcategory.id} value={subcategory.id}>
+						{subcategory.subcategory_name}
+					</MenuItem>
+				);
+			});
+	};
+
+	const renderSubSubcategories = () => {
+		return categories
+			.filter((category) => {
+				return category.id === form.category_id;
+			})[0]
+			.subcategories.filter((subcategory) => {
+				return subcategory.id === form.subcat_id;
+			})[0]
+			.sub_subcategories.map((sub_subcategory) => {
+				return (
+					<MenuItem key={sub_subcategory.id} value={sub_subcategory.id}>
+						{sub_subcategory.sub_subcategory_name}
+					</MenuItem>
+				);
+			});
 	};
 
 	return (
@@ -229,9 +225,7 @@ function Product(props) {
 									{form.images.length > 0 && form.featuredImageId ? (
 										<img
 											className='w-32 sm:w-48 mr-8 sm:mr-16 rounded'
-											src={
-												_.find(form.images, { id: form.featuredImageId }).url
-											}
+											src={form.featuredImageId}
 											alt={form.product_name}
 										/>
 									) : (
@@ -354,30 +348,62 @@ function Product(props) {
 									</Select>
 								</FormControl>
 								<br />
-								{form.category_id.length !== 0 ? (
-									<FormControl className={classes.formControl}>
-										<InputLabel id='category_id-label'>Sub Category</InputLabel>
-										<Select
-											required
-											id='subcat_id'
-											name='subcat_id'
-											value={form.subcat_id}
-											onChange={handleChange}
-											className={classes.selectEmpty}>
-											{renderSubcategories()}
-										</Select>
-									</FormControl>
+								{form.category_id.length !== 0 &&
+								categories.filter((cat) => {
+									return cat.id === form.category_id;
+								})[0].subcategories.length > 0 ? (
+									<div>
+										<FormControl className={classes.formControl}>
+											<InputLabel id='subcategory_id-label'>
+												Sub Category
+											</InputLabel>
+											<Select
+												required
+												id='subcat_id'
+												name='subcat_id'
+												value={form.subcat_id}
+												onChange={handleChange}
+												className={classes.selectEmpty}>
+												{renderSubcategories()}
+											</Select>
+										</FormControl>
+
+										{form.subcat_id.length !== 0 &&
+										categories
+											.filter((cat) => {
+												return cat.id === form.category_id;
+											})[0]
+											.subcategories.filter((subcat) => {
+												return subcat.id === form.subcat_id;
+											})[0].sub_subcategories.length > 0 ? (
+											<FormControl className={classes.formControl}>
+												<InputLabel id='subcategory_id-label'>
+													Sub subcategory
+												</InputLabel>
+												<Select
+													required
+													id='sub_subcat_id'
+													name='sub_subcat_id'
+													value={form.sub_subcat_id}
+													onChange={handleChange}
+													className={classes.selectEmpty}>
+													{renderSubSubcategories()}
+												</Select>
+											</FormControl>
+										) : null}
+									</div>
 								) : null}
+
 								<FuseChipSelect
 									className='mt-8 mb-16'
-									value={form.highlights.split(",").map((item) => ({
+									value={form.highlights.map((item) => ({
 										value: item,
 										label: item
 									}))}
 									onChange={(value) => handleChipChange(value, "highlights")}
-									placeholder='Select multiple highlights'
+									placeholder='Select Multiple Highlights'
 									textFieldProps={{
-										label: "Tags",
+										label: "Highlights",
 										InputLabelProps: {
 											shrink: true
 										},
@@ -387,14 +413,14 @@ function Product(props) {
 								/>
 								<FuseChipSelect
 									className='mt-8 mb-16'
-									value={form.specs.split(",").map((item) => ({
+									value={form.sizes.map((item) => ({
 										value: item,
 										label: item
 									}))}
-									onChange={(value) => handleChipChange(value, "specs")}
-									placeholder='Select multiple specs'
+									onChange={(value) => handleChipChange(value, "sizes")}
+									placeholder='Select Multiple Sizes'
 									textFieldProps={{
-										label: "Specs",
+										label: "Sizes",
 										InputLabelProps: {
 											shrink: true
 										},
@@ -402,39 +428,6 @@ function Product(props) {
 									}}
 									isMulti
 								/>
-								<FormControl className={classes.formControl}>
-									<InputLabel id='demo-mutiple-chip-label'>Chip</InputLabel>
-									<Select
-										id='demo-mutiple-chip'
-										multiple
-										value={form.sizes}
-										onChange={handleChangeMultiple}
-										input={<Input id='select-multiple-chip' />}
-										renderValue={(selected) => (
-											<div className={classes.chips}>
-												{selected.map((value) => (
-													<Chip
-														key={value}
-														label={value}
-														className={classes.chip}
-													/>
-												))}
-											</div>
-										)}
-										MenuProps={MenuProps}>
-										<MenuItem key={"small"} value={"small"}>
-											Small
-										</MenuItem>
-
-										<MenuItem key={"medium"} value={"medium"}>
-											Medium
-										</MenuItem>
-
-										<MenuItem key={"large"} value={"large"}>
-											Large
-										</MenuItem>
-									</Select>
-								</FormControl>
 							</div>
 						)}
 						{tabValue === 2 && (
