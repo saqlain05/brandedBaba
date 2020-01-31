@@ -16,8 +16,30 @@ export function getProduct(id) {
 		});
 }
 
-export function saveProduct(id, data) {
-	const request = axios.put(`http://13.233.225.39/api/products/${id}`, data);
+export function saveProduct(data) {
+	console.log(data);
+	const request = axios.post(
+		`http://localhost:8000/api/products/${data.id}`,
+		data
+	);
+
+	return (dispatch) =>
+		request.then((response) => {
+			dispatch(showMessage({ message: "Product Saved" }));
+
+			return dispatch({
+				type: SAVE_PRODUCT,
+				payload: response.data
+			});
+		});
+}
+
+export function updateProduct(data) {
+	console.log(data);
+	const request = axios.put(
+		`http://localhost:8000/api/products/${data.id}`,
+		data
+	);
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -50,7 +72,7 @@ export function newProduct() {
 		highlights: "",
 		specs: "",
 		is_verified: false,
-		sizes: []
+		sizes: ["small"]
 	};
 
 	return {

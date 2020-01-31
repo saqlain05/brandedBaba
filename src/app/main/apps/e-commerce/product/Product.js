@@ -10,7 +10,9 @@ import {
 	InputLabel,
 	Select,
 	MenuItem,
-	FormControl
+	FormControl,
+	Input,
+	Chip
 } from "@material-ui/core";
 import { orange } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/styles";
@@ -24,8 +26,17 @@ import withReducer from "app/store/withReducer";
 import * as Actions from "../store/actions";
 import reducer from "../store/reducers";
 import axios from "axios";
-import AWS from "aws-sdk";
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+	PaperProps: {
+		style: {
+			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+			width: 250
+		}
+	}
+};
 const useStyles = makeStyles((theme) => ({
 	formControl: {
 		margin: theme.spacing(1),
@@ -77,13 +88,7 @@ function Product(props) {
 	const [categories, setCategories] = useState([]);
 	const [subcategories, setSubcategories] = useState([]);
 	const { form, handleChange, setForm } = useForm(null);
-	useEffect(() => {
-		//configuring the AWS environment
-		AWS.config.update({
-			accessKeyId: "AKIAILVU3EZSDE7OZX2A",
-			secretAccessKey: "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"
-		});
-	}, []);
+
 	useEffect(() => {
 		if (form) {
 			const fetchSubcategories = async () => {
@@ -91,7 +96,6 @@ function Product(props) {
 					`http://13.233.225.39/api/category/${form.category_id}/subcategories`
 				);
 				const data = response.data.subcategories;
-				console.log(data);
 				setSubcategories(data);
 			};
 			if (form.category_id) fetchSubcategories();
@@ -124,6 +128,13 @@ function Product(props) {
 		}
 	}, [form, product.data, setForm]);
 
+	const handleChangeMultiple = (event) => {
+		const { value } = event.target;
+
+		console.log(value);
+		setForm(_.set({ ...form }, "sizes", value));
+	};
+
 	function handleChangeTab(event, tabValue) {
 		setTabValue(tabValue);
 	}
@@ -140,34 +151,22 @@ function Product(props) {
 
 	const handleUploadChange = async (e) => {
 		const file = e.target.files[0];
-		console.log(file);
 
 		if (!file) {
 			return;
 		}
-		const gcsname = new Date().toISOString() + "-" + file.filename;
-
-		let s3, params;
-
-		s3 = new AWS.S3();
-
-		const options = { partSize: 10 * 1024 * 1024, queueSize: 1 };
-		var folder = "product-images";
-		params = {
-			Bucket: "brandedbaba-bucket",
-			Body: file,
-			Key: `${folder}/${gcsname}`,
-			ContentType: file.type,
-			ACL: "public-read"
-		};
-
-		const response = await s3.upload(params, options).promise();
-
-		setForm(_.set({ ...form }, `images`, [response.Location, ...form.images]));
+		const formData = new FormData();
+		formData.append("file", file);
+		const response = await axios.post(
+			"http://localhost:8000/api/save-product-image",
+			formData
+		);
+		setForm(
+			_.set({ ...form }, `images`, [response.data.image_url, ...form.images])
+		);
 	};
 
 	function canBeSubmitted() {
-		console.log(form);
 		return (
 			form.product_name.length > 0 &&
 			form.description.length > 0 &&
@@ -260,7 +259,16 @@ function Product(props) {
 								className='whitespace-no-wrap'
 								variant='contained'
 								disabled={!canBeSubmitted()}
-								onClick={() => dispatch(Actions.saveProduct({ form }))}>
+								onClick={() => {
+									const params = props.match.params;
+									const { productId } = params;
+
+									if (productId === "new") {
+										dispatch(Actions.saveProduct(form));
+									} else {
+										dispatch(Actions.updateProduct(form));
+									}
+								}}>
 								Save
 							</Button>
 						</FuseAnimate>
@@ -277,6 +285,7 @@ function Product(props) {
 					scrollButtons='auto'
 					classes={{ root: "w-full h-64" }}>
 					<Tab className='h-64 normal-case' label='Basic Info' />
+					<Tab className='h-64 normal-case' label='Product Detail' />
 					<Tab className='h-64 normal-case' label='Product Images' />
 					<Tab className='h-64 normal-case' label='Pricing' />
 					<Tab className='h-64 normal-case' label='Inventory' />
@@ -328,6 +337,10 @@ function Product(props) {
 									variant='outlined'
 									fullWidth
 								/>
+							</div>
+						)}
+						{tabValue === 1 && (
+							<div>
 								<FormControl className={classes.formControl}>
 									<InputLabel id='category_id-label'>Category</InputLabel>
 									<Select
@@ -389,9 +402,43 @@ function Product(props) {
 									}}
 									isMulti
 								/>
+								<FormControl className={classes.formControl}>
+									<InputLabel id='demo-mutiple-chip-label'>Chip</InputLabel>
+									<Select
+										labelId='demo-mutiple-chip-label'
+										id='demo-mutiple-chip'
+										multiple
+										value={form.sizes}
+										onChange={handleChangeMultiple}
+										input={<Input id='select-multiple-chip' />}
+										renderValue={(selected) => (
+											<div className={classes.chips}>
+												{selected.map((value) => (
+													<Chip
+														key={value}
+														label={value}
+														className={classes.chip}
+													/>
+												))}
+											</div>
+										)}
+										MenuProps={MenuProps}>
+										<MenuItem key={"small"} value={"small"}>
+											Small
+										</MenuItem>
+
+										<MenuItem key={"medium"} value={"medium"}>
+											Medium
+										</MenuItem>
+
+										<MenuItem key={"large"} value={"large"}>
+											Large
+										</MenuItem>
+									</Select>
+								</FormControl>
 							</div>
 						)}
-						{tabValue === 1 && (
+						{tabValue === 2 && (
 							<div>
 								<input
 									accept='image/*'
@@ -433,7 +480,7 @@ function Product(props) {
 								</div>
 							</div>
 						)}
-						{tabValue === 2 && (
+						{tabValue === 3 && (
 							<div>
 								<TextField
 									className='mt-8 mb-16'
@@ -488,7 +535,7 @@ function Product(props) {
 								/>
 							</div>
 						)}
-						{tabValue === 3 && (
+						{tabValue === 4 && (
 							<div>
 								<FormControl className={classes.formControl}>
 									<InputLabel id='inStock-label'>In Stock</InputLabel>
