@@ -5,7 +5,7 @@ export const GET_PRODUCT = "[E-COMMERCE APP] GET PRODUCT";
 export const SAVE_PRODUCT = "[E-COMMERCE APP] SAVE PRODUCT";
 
 export function getProduct(id) {
-	const request = axios.get(`http://13.233.225.39/api/products/${id}`);
+	const request = axios.get(`http://13.235.187.206/api/products/${id}`);
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -19,7 +19,7 @@ export function getProduct(id) {
 export function saveProduct(data) {
 	console.log(data);
 	const request = axios.post(
-		`http://13.233.225.39/api/products/${data.id}`,
+		`http://13.235.187.206/api/products/${data.id}`,
 		data
 	);
 
@@ -37,7 +37,7 @@ export function saveProduct(data) {
 export function updateProduct(data) {
 	console.log(data);
 	const request = axios.put(
-		`http://13.233.225.39/api/products/${data.id}`,
+		`http://13.235.187.206/api/products/${data.id}`,
 		data
 	);
 
