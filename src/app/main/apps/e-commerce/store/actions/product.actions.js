@@ -5,7 +5,7 @@ export const GET_PRODUCT = "[E-COMMERCE APP] GET PRODUCT";
 export const SAVE_PRODUCT = "[E-COMMERCE APP] SAVE PRODUCT";
 
 export function getProduct(id) {
-	const request = axios.get(`http://localhost:8000/api/products/${id}`);
+	const request = axios.get(`http://13.235.187.206/api/products/${id}`);
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -37,7 +37,7 @@ export function saveProduct(data) {
 		is_verified: data.is_verified,
 		sizes: data.sizes
 	};
-	const request = axios.post(`http://localhost:8000/api/products`, postData);
+	const request = axios.post(`http://13.235.187.206/api/products`, postData);
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -73,7 +73,7 @@ export function updateProduct(data) {
 		is_verified: data.is_verified,
 		sizes: data.sizes
 	};
-	const request = axios.put(`http://localhost:8000/api/products`, postData);
+	const request = axios.put(`http://13.235.187.206/api/products`, postData);
 
 	return (dispatch) =>
 		request.then((response) => {
