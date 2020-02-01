@@ -39,6 +39,21 @@ const rows = [
 		label: "Category",
 		sort: true
 	},
+
+	{
+		id: "subcategories",
+		align: "left",
+		disablePadding: false,
+		label: "Sub Category",
+		sort: true
+	},
+	{
+		id: "sub-subcategories",
+		align: "left",
+		disablePadding: false,
+		label: "Sub Subcategory",
+		sort: true
+	},
 	{
 		id: "mrp",
 		align: "right",

@@ -187,6 +187,14 @@ function ProductsTable(props) {
 										<TableCell className='truncate' component='th' scope='row'>
 											{n.category.category_name}
 										</TableCell>
+										<TableCell className='truncate' component='th' scope='row'>
+											{n.subcategory.subcategory_name}
+										</TableCell>
+										<TableCell className='truncate' component='th' scope='row'>
+											{n.sub_subcategory
+												? n.sub_subcategory.sub_subcategory_name
+												: ""}
+										</TableCell>
 
 										<TableCell component='th' scope='row' align='right'>
 											{n.mrp} <span>₹</span>
