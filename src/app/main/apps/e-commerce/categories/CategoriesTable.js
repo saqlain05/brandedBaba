@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-	Icon,
 	Table,
 	TableBody,
 	TableCell,
@@ -17,15 +16,15 @@ import { useDispatch, useSelector } from "react-redux";
 
 function CategoriesTable(props) {
 	const dispatch = useDispatch();
-	const products = useSelector(
-		({ eCommerceApp }) => eCommerceApp.products.data
+	const categories = useSelector(
+		({ eCommerceApp }) => eCommerceApp.categories.data
 	);
 	const searchText = useSelector(
-		({ eCommerceApp }) => eCommerceApp.products.searchText
+		({ eCommerceApp }) => eCommerceApp.categories.searchText
 	);
 
 	const [selected, setSelected] = useState([]);
-	const [data, setData] = useState(products);
+	const [data, setData] = useState(categories);
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [order, setOrder] = useState({
@@ -34,19 +33,19 @@ function CategoriesTable(props) {
 	});
 
 	useEffect(() => {
-		dispatch(Actions.getProducts());
+		dispatch(Actions.getCategories());
 	}, [dispatch]);
 
 	useEffect(() => {
-		console.log(products);
+		console.log(categories);
 		setData(
 			searchText.length === 0
-				? products
-				: _.filter(products, (item) =>
+				? categories
+				: _.filter(categories, (item) =>
 						item.product_name.toLowerCase().includes(searchText.toLowerCase())
 				  )
 		);
-	}, [products, searchText]);
+	}, [categories, searchText]);
 
 	function handleRequestSort(event, property) {
 		const id = property;
@@ -71,7 +70,8 @@ function CategoriesTable(props) {
 	}
 
 	function handleClick(item) {
-		props.history.push("/apps/e-commerce/products/" + item.id);
+		console.log(item);
+		props.history.push("/apps/e-commerce/categories/" + item.id);
 	}
 
 	function handleCheck(event, id) {
@@ -120,15 +120,10 @@ function CategoriesTable(props) {
 							[
 								(o) => {
 									switch (order.id) {
-										case "name": {
-											return o.category.product_name;
+										case "category_name": {
+											return o.category_name;
 										}
-										case "categories": {
-											return o.category.category_name;
-										}
-										case "mrp": {
-											return o.category.price;
-										}
+
 										default: {
 											return o[order.id];
 										}
@@ -160,51 +155,13 @@ function CategoriesTable(props) {
 											/>
 										</TableCell>
 
-										<TableCell
-											className='w-52'
-											component='th'
-											scope='row'
-											padding='none'>
-											{n.images.length > 0 && n.featuredImageId ? (
-												<img
-													className='w-full block rounded'
-													src={n.featuredImageId}
-													alt={n.product_name}
-												/>
-											) : (
-												<img
-													className='w-full block rounded'
-													src='assets/images/ecommerce/product-image-placeholder.png'
-													alt={n.product_name}
-												/>
-											)}
-										</TableCell>
-
 										<TableCell component='th' scope='row'>
-											{n.product_name}
+											{n.category_name}
 										</TableCell>
-
-										<TableCell className='truncate' component='th' scope='row'>
-											{n.category.category_name}
-										</TableCell>
-
-										<TableCell component='th' scope='row' align='right'>
-											{n.mrp} <span>₹</span>
-										</TableCell>
-
-										<TableCell component='th' scope='row' align='right'>
-											{n.is_verified ? (
-												<Icon className='text-green text-20'>check_circle</Icon>
-											) : (
-												<Icon className='text-red text-20'>remove_circle</Icon>
-											)}
-										</TableCell>
-										<TableCell component='th' scope='row' align='right'>
-											{n.inStock ? (
-												<Icon className='text-green text-20'>check_circle</Icon>
-											) : (
-												<Icon className='text-red text-20'>remove_circle</Icon>
-											)}
+										<TableCell component='th' scope='row'>
+											{n.subcategories.map((subcat) => (
+												<div key={subcat.id}>{subcat.subcategory_name}</div>
+											))}
 										</TableCell>
 									</TableRow>
 								);

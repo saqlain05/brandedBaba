@@ -21,7 +21,7 @@ function CategoriesHeader(props) {
 				</FuseAnimate>
 				<FuseAnimate animation='transition.slideLeftIn' delay={300}>
 					<Typography className='hidden sm:flex' variant='h6'>
-						Products
+						Categories
 					</Typography>
 				</FuseAnimate>
 			</div>

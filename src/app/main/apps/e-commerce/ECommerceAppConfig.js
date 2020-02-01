@@ -15,12 +15,26 @@ export const ECommerceAppConfig = {
 			component: React.lazy(() => import("./products/Products"))
 		},
 		{
-			path: "/apps/e-commerce/categories/:categoriesId",
-			component: React.lazy(() => import("./product/Product"))
+			path: "/apps/e-commerce/categories/:categoryId",
+			component: React.lazy(() => import("./category/Category")),
+			exact: true
+		},
+		{
+			path:
+				"/apps/e-commerce/categories/:categoryId/subcategory/:subcategoryId",
+			component: React.lazy(() => import("./subcategory/Subcategory")),
+			exact: true
+		},
+		{
+			path:
+				"/apps/e-commerce/categories/:categoryId/subcategory/:subcategoryId/sub-subcategory/:subSubcategoryId",
+			component: React.lazy(() => import("./sub-subcategory/SubSubcategory")),
+			exact: true
 		},
 		{
 			path: "/apps/e-commerce/categories",
-			component: React.lazy(() => import("./categories/Categories"))
+			component: React.lazy(() => import("./categories/Categories")),
+			exact: true
 		},
 		{
 			path: "/apps/e-commerce/orders/:orderId",

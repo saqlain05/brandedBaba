@@ -19,45 +19,17 @@ import { makeStyles } from "@material-ui/styles";
 
 const rows = [
 	{
-		id: "image",
-		align: "left",
-		disablePadding: true,
-		label: "",
-		sort: false
-	},
-	{
-		id: "name",
+		id: "category_name",
 		align: "left",
 		disablePadding: false,
-		label: "Name",
+		label: "Category Name",
 		sort: true
 	},
 	{
-		id: "categories",
+		id: "subcategories",
 		align: "left",
 		disablePadding: false,
-		label: "Category",
-		sort: true
-	},
-	{
-		id: "mrp",
-		align: "right",
-		disablePadding: false,
-		label: "Price",
-		sort: true
-	},
-	{
-		id: "is_verified",
-		align: "right",
-		disablePadding: false,
-		label: "Is Verified",
-		sort: true
-	},
-	{
-		id: "inStock",
-		align: "right",
-		disablePadding: false,
-		label: "In Stock",
+		label: "Subcategories",
 		sort: true
 	}
 ];
