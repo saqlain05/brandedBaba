@@ -160,8 +160,8 @@ function SubSubcategory(props) {
 									required
 									label='Subcategory Name'
 									autoFocus
-									id='subcategory_name'
-									name='subcategory_name'
+									id='sub_subcategory_name'
+									name='sub_subcategory_name'
 									value={form.sub_subcategory_name}
 									onChange={handleChange}
 									variant='outlined'
