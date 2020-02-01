@@ -39,34 +39,6 @@ const navigationConfig = [
 						type: "item",
 						url: "/apps/e-commerce/categories/new",
 						exact: true
-					},
-					{
-						id: "e-commerce-subcategories",
-						title: "Subcategories",
-						type: "item",
-						url: "/apps/e-commerce/subcategories",
-						exact: true
-					},
-					{
-						id: "e-commerce-new-subcategory",
-						title: "New Subcategory",
-						type: "item",
-						url: "/apps/e-commerce/subcategories/new",
-						exact: true
-					},
-					{
-						id: "e-commerce-sub-subcategories",
-						title: "Sub Subcategories",
-						type: "item",
-						url: "/apps/e-commerce/sub-subcategories",
-						exact: true
-					},
-					{
-						id: "e-commerce-new-sub-subcategory",
-						title: "New Sub Subcategory",
-						type: "item",
-						url: "/apps/e-commerce/sub-subcategories/new",
-						exact: true
 					}
 				]
 			},
