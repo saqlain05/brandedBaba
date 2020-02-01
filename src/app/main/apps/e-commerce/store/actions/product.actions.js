@@ -17,26 +17,73 @@ export function getProduct(id) {
 }
 
 export function saveProduct(data) {
-	var postData = {
-		product_name: data.product_name,
-		description: data.description,
-		featuredImageId: data.featuredImageId,
-		images: data.images,
-		category_id: data.category_id,
-		sub_subcat_id: data.sub_subcat_id,
-		subcat_id: data.subcat_id,
-		inStock: data.inStock,
-		seller: data.seller,
-		stars: data.stars,
-		likes: data.likes,
-		total_reviews: data.total_reviews,
-		mrp: data.mrp,
-		discounted_price: data.discounted_price,
-		discount: data.discount,
-		highlights: data.highlights,
-		is_verified: data.is_verified,
-		sizes: data.sizes
-	};
+	console.log(data);
+	let postData;
+	if (data.subcat_id !== "") {
+		if (data.sub_subcat_id !== "") {
+			postData = {
+				product_name: data.product_name,
+				description: data.description,
+				featuredImageId: data.featuredImageId,
+				images: data.images,
+				category_id: data.category_id,
+				sub_subcat_id: data.sub_subcat_id,
+				subcat_id: data.subcat_id,
+				inStock: data.inStock,
+				seller: data.seller,
+				stars: data.stars,
+				likes: data.likes,
+				total_reviews: data.total_reviews,
+				mrp: data.mrp,
+				discounted_price: data.discounted_price,
+				discount: data.discount,
+				highlights: data.highlights,
+				is_verified: data.is_verified,
+				sizes: data.sizes
+			};
+		} else {
+			postData = {
+				product_name: data.product_name,
+				description: data.description,
+				featuredImageId: data.featuredImageId,
+				images: data.images,
+				category_id: data.category_id,
+				subcat_id: data.subcat_id,
+				inStock: data.inStock,
+				seller: data.seller,
+				stars: data.stars,
+				likes: data.likes,
+				total_reviews: data.total_reviews,
+				mrp: data.mrp,
+				discounted_price: data.discounted_price,
+				discount: data.discount,
+				highlights: data.highlights,
+				is_verified: data.is_verified,
+				sizes: data.sizes
+			};
+		}
+	} else {
+		postData = {
+			product_name: data.product_name,
+			description: data.description,
+			featuredImageId: data.featuredImageId,
+			images: data.images,
+			category_id: data.category_id,
+			inStock: data.inStock,
+			seller: data.seller,
+			stars: data.stars,
+			likes: data.likes,
+			total_reviews: data.total_reviews,
+			mrp: data.mrp,
+			discounted_price: data.discounted_price,
+			discount: data.discount,
+			highlights: data.highlights,
+			is_verified: data.is_verified,
+			sizes: data.sizes
+		};
+	}
+
+	console.log(postData);
 	const request = axios.post(`http://13.235.187.206/api/products`, postData);
 
 	return (dispatch) =>
@@ -105,7 +152,18 @@ export function newProduct() {
 		discount: 0,
 		highlights: [],
 		is_verified: false,
-		sizes: ["small"]
+		sizes: ["small"],
+		category: {
+			category_name: ""
+		},
+
+		subcategory: {
+			subcategory_name: ""
+		},
+
+		sub_scategory: {
+			sub_subcategory_name: ""
+		}
 	};
 
 	return {
