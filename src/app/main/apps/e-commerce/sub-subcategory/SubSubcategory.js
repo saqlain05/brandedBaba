@@ -111,9 +111,13 @@ function SubSubcategory(props) {
 								disabled={!canBeSubmitted()}
 								onClick={() => {
 									const params = props.match.params;
-									const { categoryId, subcategoryId } = params;
+									const {
+										categoryId,
+										subcategoryId,
+										subSubcategoryId
+									} = params;
 
-									if (categoryId === "new") {
+									if (subSubcategoryId === "new") {
 										dispatch(
 											Actions.saveSubSubcategory(
 												categoryId,
@@ -158,7 +162,7 @@ function SubSubcategory(props) {
 									className='mt-8 mb-16'
 									error={form.sub_subcategory_name === ""}
 									required
-									label='Subcategory Name'
+									label='Sub Subcategory Name'
 									autoFocus
 									id='sub_subcategory_name'
 									name='sub_subcategory_name'

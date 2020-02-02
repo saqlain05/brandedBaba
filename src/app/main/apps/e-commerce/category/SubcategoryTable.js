@@ -5,13 +5,16 @@ import {
 	TableCell,
 	TablePagination,
 	TableRow,
-	Checkbox
+	Checkbox,
+	Button
 } from "@material-ui/core";
+
+import { Link } from "react-router-dom";
 import { FuseScrollbars } from "@fuse";
 import { withRouter } from "react-router-dom";
 import _ from "@lodash";
 import SubcategoryTableHead from "./SubcategoryTableHead";
-
+import { FuseAnimate } from "@fuse";
 function SubcategoryTable(props) {
 	const data = props.subcategories;
 
@@ -81,6 +84,23 @@ function SubcategoryTable(props) {
 
 	return (
 		<div className='w-full flex flex-col'>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "row",
+					justifyContent: "right"
+				}}>
+				<FuseAnimate animation='transition.slideRightIn' delay={300}>
+					<Button
+						component={Link}
+						to={`/apps/e-commerce/categories/${props.match.params.categoryId}/subcategory/new`}
+						className='whitespace-no-wrap'
+						variant='contained'>
+						<span className='hidden sm:flex'>Add New Subcategory</span>
+						<span className='flex sm:hidden'>New</span>
+					</Button>
+				</FuseAnimate>
+			</div>
 			<FuseScrollbars className='flex-grow overflow-x-auto'>
 				<Table className='min-w-xl' aria-labelledby='tableTitle'>
 					<SubcategoryTableHead

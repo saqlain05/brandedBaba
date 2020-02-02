@@ -18,6 +18,7 @@ export function getCategory(id) {
 }
 
 export function saveCategory(data) {
+	console.log(data);
 	const request = axios.post(`http://13.235.187.206/api/categories`, {
 		category_name: data.category_name
 	});

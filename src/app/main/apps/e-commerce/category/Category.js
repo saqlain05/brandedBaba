@@ -104,9 +104,7 @@ function Category(props) {
 									const { categoryId } = params;
 
 									if (categoryId === "new") {
-										dispatch(
-											Actions.saveCategory(props.match.params.categoryId, form)
-										);
+										dispatch(Actions.saveCategory(form));
 									} else {
 										dispatch(
 											Actions.updateCategory(
@@ -132,7 +130,9 @@ function Category(props) {
 					scrollButtons='auto'
 					classes={{ root: "w-full h-64" }}>
 					<Tab className='h-64 normal-case' label='Basic Info' />
-					<Tab className='h-64 normal-case' label='Subcategories' />
+					{props.match.params.categoryId === "new" ? null : (
+						<Tab className='h-64 normal-case' label='Subcategories' />
+					)}
 				</Tabs>
 			}
 			content={

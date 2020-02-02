@@ -19,6 +19,8 @@ import SubSubcategoryTable from "./SubSubcategoryTable";
 // import axios from "axios";
 
 function Subcategory(props) {
+	const params = props.match.params;
+	const { subcategoryId, categoryId } = params;
 	const dispatch = useDispatch();
 	const subcategory = useSelector(
 		({ eCommerceApp }) => eCommerceApp.subcategory
@@ -30,9 +32,6 @@ function Subcategory(props) {
 
 	useEffect(() => {
 		function updateCategoryState() {
-			const params = props.match.params;
-			const { subcategoryId, categoryId } = params;
-
 			if (subcategoryId === "new") {
 				dispatch(Actions.newSubcategory());
 			} else {
@@ -41,7 +40,7 @@ function Subcategory(props) {
 		}
 
 		updateCategoryState();
-	}, [dispatch, props.match.params]);
+	}, [dispatch, categoryId, subcategoryId]);
 
 	useEffect(() => {
 		if (
@@ -107,10 +106,7 @@ function Subcategory(props) {
 								variant='contained'
 								disabled={!canBeSubmitted()}
 								onClick={() => {
-									const params = props.match.params;
-									const { categoryId } = params;
-
-									if (categoryId === "new") {
+									if (subcategoryId === "new") {
 										dispatch(Actions.saveSubcategory(categoryId, form));
 									} else {
 										dispatch(Actions.updateSubcategory(categoryId, form));
@@ -132,7 +128,9 @@ function Subcategory(props) {
 					scrollButtons='auto'
 					classes={{ root: "w-full h-64" }}>
 					<Tab className='h-64 normal-case' label='Basic Info' />
-					<Tab className='h-64 normal-case' label='Subcategories' />
+					{subcategoryId !== "new" ? (
+						<Tab className='h-64 normal-case' label='Sub Subcategories' />
+					) : null}
 				</Tabs>
 			}
 			content={

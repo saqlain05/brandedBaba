@@ -19,8 +19,9 @@ export function getSubSubcategory(id, subcat_id, sub_subcat_id) {
 }
 
 export function saveSubSubcategory(id, subcat_id, data) {
+	console.log(data.sub_subcategory_name);
 	const request = axios.post(
-		`http://13.235.187.206/api/categories/${id}/subcategories/${subcat_id}/subsubcategories`,
+		`http://13.235.187.206/api/category/${id}/subcategories/${subcat_id}/subsubcategories`,
 		{
 			sub_subcategory_name: data.sub_subcategory_name
 		}
@@ -39,7 +40,7 @@ export function saveSubSubcategory(id, subcat_id, data) {
 
 export function updateSubSubcategory(id, subcat_id, data) {
 	const request = axios.put(
-		`http://13.235.187.206/api/categories/${id}/subcategories/${subcat_id}/subsubcategories/${data.id}`,
+		`http://13.235.187.206/api/category/${id}/subcategories/${subcat_id}/subsubcategories/${data.id}`,
 		{
 			sub_subcategory_name: data.sub_subcategory_name
 		}
