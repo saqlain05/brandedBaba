@@ -96,6 +96,7 @@ function ProductsTableHead(props) {
 	}
 
 	function closeSelectedProductsMenu() {
+		props.handleDelete();
 		setSelectedProductsMenu(null);
 	}
 

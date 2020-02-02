@@ -53,6 +53,8 @@ function SubcategoriesTableHead(props) {
 	}
 
 	function closeSelectedProductsMenu() {
+		console.log("clicked");
+		props.handleDelete();
 		setSelectedProductsMenu(null);
 	}
 

@@ -42,11 +42,19 @@ function SubcategoryTable(props) {
 
 	function handleSelectAllClick(event) {
 		if (event.target.checked) {
-			setSelected(data.map((n) => n.id));
+			setSelected(
+				data.map((n) => {
+					return n.id;
+				})
+			);
 			return;
 		}
 		setSelected([]);
 	}
+
+	const handleDelete = () => {
+		console.log(selected);
+	};
 
 	function handleClick(item) {
 		props.history.push(
@@ -104,6 +112,7 @@ function SubcategoryTable(props) {
 			<FuseScrollbars className='flex-grow overflow-x-auto'>
 				<Table className='min-w-xl' aria-labelledby='tableTitle'>
 					<SubcategoryTableHead
+						handleDelete={handleDelete}
 						numSelected={selected.length}
 						order={order}
 						onSelectAllClick={handleSelectAllClick}

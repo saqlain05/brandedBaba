@@ -1,32 +1,35 @@
-import * as Actions from '../actions';
+import * as Actions from "../actions";
 
 const initialState = {
-    data      : [],
-    searchText: ''
+	data: [],
+	searchText: ""
 };
 
-const productsReducer = function (state = initialState, action) {
-    switch ( action.type )
-    {
-        case Actions.GET_PRODUCTS:
-        {
-            return {
-                ...state,
-                data: action.payload
-            };
-        }
-        case Actions.SET_PRODUCTS_SEARCH_TEXT:
-        {
-            return {
-                ...state,
-                searchText: action.searchText
-            };
-        }
-        default:
-        {
-            return state;
-        }
-    }
+const productsReducer = function(state = initialState, action) {
+	switch (action.type) {
+		case Actions.GET_PRODUCTS: {
+			return {
+				...state,
+				data: action.payload
+			};
+		}
+		case Actions.SET_PRODUCTS_SEARCH_TEXT: {
+			return {
+				...state,
+				searchText: action.searchText
+			};
+		}
+
+		case Actions.DELETE_PRODUCT: {
+			return {
+				...state
+			};
+		}
+
+		default: {
+			return state;
+		}
+	}
 };
 
 export default productsReducer;

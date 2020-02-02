@@ -8,6 +8,8 @@ import {
 	TableRow,
 	Checkbox
 } from "@material-ui/core";
+
+import { showMessage } from "app/store/actions/fuse";
 import { FuseScrollbars } from "@fuse";
 import { withRouter } from "react-router-dom";
 import _ from "@lodash";
@@ -38,7 +40,6 @@ function ProductsTable(props) {
 	}, [dispatch]);
 
 	useEffect(() => {
-		console.log(products);
 		setData(
 			searchText.length === 0
 				? products
@@ -97,6 +98,22 @@ function ProductsTable(props) {
 	function handleChangePage(event, page) {
 		setPage(page);
 	}
+	const handleDelete = async () => {
+		for (var index in selected) {
+			dispatch(Actions.deleteProduct(selected[index]));
+		}
+
+		setData([]);
+		dispatch(Actions.getProducts());
+		setData(
+			searchText.length === 0
+				? products
+				: _.filter(products, (item) =>
+						item.product_name.toLowerCase().includes(searchText.toLowerCase())
+				  )
+		);
+		dispatch(showMessage({ message: "Deleted successfully" }));
+	};
 
 	function handleChangeRowsPerPage(event) {
 		setRowsPerPage(event.target.value);
@@ -112,6 +129,7 @@ function ProductsTable(props) {
 						onSelectAllClick={handleSelectAllClick}
 						onRequestSort={handleRequestSort}
 						rowCount={data.length}
+						handleDelete={handleDelete}
 					/>
 
 					<TableBody>
@@ -185,10 +203,10 @@ function ProductsTable(props) {
 										</TableCell>
 
 										<TableCell className='truncate' component='th' scope='row'>
-											{n.category.category_name}
+											{n.category ? n.category.category_name : ""}
 										</TableCell>
 										<TableCell className='truncate' component='th' scope='row'>
-											{n.subcategory.subcategory_name}
+											{n.subcategory ? n.subcategory.subcategory_name : ""}
 										</TableCell>
 										<TableCell className='truncate' component='th' scope='row'>
 											{n.sub_subcategory
