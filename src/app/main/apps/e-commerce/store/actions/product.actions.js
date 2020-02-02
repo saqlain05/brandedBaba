@@ -84,7 +84,7 @@ export function saveProduct(data) {
 	}
 
 	console.log(postData);
-	const request = axios.post(`http://localhost:8000/api/products`, postData);
+	const request = axios.post(`http://13.235.187.206/api/products`, postData);
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -120,7 +120,7 @@ export function updateProduct(data) {
 		is_verified: data.is_verified,
 		sizes: data.sizes
 	};
-	const request = axios.put(`http://localhost:8000/api/products`, postData);
+	const request = axios.put(`http://13.235.187.206/api/products`, postData);
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -152,7 +152,18 @@ export function newProduct() {
 		discount: 0,
 		highlights: [],
 		is_verified: false,
-		sizes: ["small"]
+		sizes: ["small"],
+		category: {
+			category_name: ""
+		},
+
+		subcategory: {
+			subcategory_name: ""
+		},
+
+		sub_scategory: {
+			sub_subcategory_name: ""
+		}
 	};
 
 	return {
