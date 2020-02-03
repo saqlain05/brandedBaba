@@ -15,6 +15,14 @@ export const ECommerceAppConfig = {
 			component: React.lazy(() => import("./products/Products"))
 		},
 		{
+			path: "/apps/e-commerce/offers/:offerId",
+			component: React.lazy(() => import("./offer/Offer"))
+		},
+		{
+			path: "/apps/e-commerce/offers",
+			component: React.lazy(() => import("./offers/Offers"))
+		},
+		{
 			path: "/apps/e-commerce/categories/:categoryId",
 			component: React.lazy(() => import("./category/Category")),
 			exact: true

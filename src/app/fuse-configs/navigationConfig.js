@@ -6,25 +6,34 @@ const navigationConfig = [
 		icon: "apps",
 		children: [
 			{
-				id: "e-commerce-products",
+				id: "product",
 				title: "Products",
-				type: "item",
-				url: "/apps/e-commerce/products",
-				exact: true
+				type: "collapse",
+				icon: "shopping_cart",
+				children: [
+					{
+						id: "e-commerce-products",
+						title: "Products",
+						type: "item",
+						url: "/apps/e-commerce/products",
+						exact: true
+					},
+
+					{
+						id: "e-commerce-new-product",
+						title: "New Product",
+						type: "item",
+						url: "/apps/e-commerce/products/new",
+						exact: true
+					}
+				]
 			},
 
-			{
-				id: "e-commerce-new-product",
-				title: "New Product",
-				type: "item",
-				url: "/apps/e-commerce/products/new",
-				exact: true
-			},
 			{
 				id: "category",
 				title: "Categories",
 				type: "collapse",
-				icon: "shopping_cart",
+				icon: "table_chart",
 				children: [
 					{
 						id: "e-commerce-categories",
@@ -38,6 +47,28 @@ const navigationConfig = [
 						title: "New Category",
 						type: "item",
 						url: "/apps/e-commerce/categories/new",
+						exact: true
+					}
+				]
+			},
+			{
+				id: "offer",
+				title: "Offers",
+				type: "collapse",
+				icon: "local_activity",
+				children: [
+					{
+						id: "e-commerce-offers",
+						title: "Offers",
+						type: "item",
+						url: "/apps/e-commerce/offers",
+						exact: true
+					},
+					{
+						id: "e-commerce-new-offer",
+						title: "New Offer",
+						type: "item",
+						url: "/apps/e-commerce/offers/new",
 						exact: true
 					}
 				]

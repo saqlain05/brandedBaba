@@ -1,5 +1,7 @@
 export * from "./products.actions";
 export * from "./product.actions";
+export * from "./offers.actions";
+export * from "./offer.actions";
 export * from "./categories.actions";
 export * from "./category.actions";
 export * from "./subcategory.actions";

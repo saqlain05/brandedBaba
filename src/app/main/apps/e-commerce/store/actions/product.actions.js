@@ -83,7 +83,6 @@ export function saveProduct(data) {
 		};
 	}
 
-	console.log(postData);
 	const request = axios.post(`http://13.235.187.206/api/products`, postData);
 
 	return (dispatch) =>
