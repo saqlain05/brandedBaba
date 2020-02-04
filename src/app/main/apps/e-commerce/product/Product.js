@@ -10,7 +10,11 @@ import {
 	InputLabel,
 	Select,
 	MenuItem,
-	FormControl
+	FormControl,
+	Input,
+	Checkbox,
+	ListItemText,
+	Chip
 } from "@material-ui/core";
 import { orange } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/styles";
@@ -67,6 +71,17 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+	PaperProps: {
+		style: {
+			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+			width: 250
+		}
+	}
+};
+
 function Product(props) {
 	const dispatch = useDispatch();
 	const product = useSelector(({ eCommerceApp }) => eCommerceApp.product);
@@ -74,10 +89,13 @@ function Product(props) {
 	const classes = useStyles(props);
 	const [tabValue, setTabValue] = useState(0);
 	const [categories, setCategories] = useState([]);
+
+	const [offers, setOffers] = useState([]);
 	const { form, handleChange, setForm } = useForm(null);
 
 	useEffect(() => {
 		fetchCategories();
+		fetchOffers();
 	}, []);
 
 	useEffect(() => {
@@ -94,6 +112,10 @@ function Product(props) {
 
 		updateProductState();
 	}, [dispatch, props.match.params]);
+
+	const handleChangeMultiple = (event) => {
+		setForm(_.set({ ...form }, "offer_ids", event.target.value));
+	};
 
 	useEffect(() => {
 		if (
@@ -151,11 +173,15 @@ function Product(props) {
 	}
 
 	const fetchCategories = async () => {
-		console.log("call");
 		const response = await axios.get("http://13.235.187.206/api/category");
 		const data = response.data.categories;
 		setCategories(data);
-		console.log(data);
+	};
+
+	const fetchOffers = async () => {
+		const response = await axios.get("http://13.235.187.206/api/offers");
+		const data = response.data.data;
+		setOffers(data);
 	};
 
 	const renderCategories = () => {
@@ -348,52 +374,94 @@ function Product(props) {
 									</Select>
 								</FormControl>
 								<br />
-								{form.category_id.length !== 0 &&
-								categories.filter((cat) => {
-									return cat.id === form.category_id;
-								})[0].subcategories.length > 0 ? (
-									<div>
-										<FormControl className={classes.formControl}>
-											<InputLabel id='subcategory_id-label'>
-												Sub Category
-											</InputLabel>
-											<Select
-												required
-												id='subcat_id'
-												name='subcat_id'
-												value={form.subcat_id}
-												onChange={handleChange}
-												className={classes.selectEmpty}>
-												{renderSubcategories()}
-											</Select>
-										</FormControl>
-
-										{form.subcat_id.length !== 0 &&
-										categories
-											.filter((cat) => {
-												return cat.id === form.category_id;
-											})[0]
-											.subcategories.filter((subcat) => {
-												return subcat.id === form.subcat_id;
-											})[0].sub_subcategories.length > 0 ? (
+								{form.category_id.length > 0 && categories.length > 0 ? (
+									categories.filter((cat) => {
+										return cat.id === form.category_id;
+									})[0].subcategories.length > 0 ? (
+										<div>
 											<FormControl className={classes.formControl}>
 												<InputLabel id='subcategory_id-label'>
-													Sub subcategory
+													Sub Category
 												</InputLabel>
 												<Select
 													required
-													id='sub_subcat_id'
-													name='sub_subcat_id'
-													value={form.sub_subcat_id}
+													id='subcat_id'
+													name='subcat_id'
+													value={form.subcat_id}
 													onChange={handleChange}
 													className={classes.selectEmpty}>
-													{renderSubSubcategories()}
+													{renderSubcategories()}
 												</Select>
 											</FormControl>
-										) : null}
-									</div>
-								) : null}
 
+											{form.subcat_id.length !== 0 &&
+											categories
+												.filter((cat) => {
+													return cat.id === form.category_id;
+												})[0]
+												.subcategories.filter((subcat) => {
+													return subcat.id === form.subcat_id;
+												})[0].sub_subcategories.length > 0 ? (
+												<FormControl className={classes.formControl}>
+													<InputLabel id='subcategory_id-label'>
+														Sub subcategory
+													</InputLabel>
+													<Select
+														required
+														id='sub_subcat_id'
+														name='sub_subcat_id'
+														value={form.sub_subcat_id}
+														onChange={handleChange}
+														className={classes.selectEmpty}>
+														{renderSubSubcategories()}
+													</Select>
+												</FormControl>
+											) : null}
+										</div>
+									) : null
+								) : null}
+								{
+									<FormControl className={classes.formControl}>
+										<InputLabel id='demo-mutiple-checkbox-label'>
+											Applicable Offers
+										</InputLabel>
+										<Select
+											id='demo-mutiple-checkbox'
+											multiple
+											value={form.offer_ids}
+											onChange={handleChangeMultiple}
+											input={<Input />}
+											renderValue={(selected) => {
+												return (
+													<div className={classes.chips}>
+														{selected.map((value) => {
+															let renderOffer;
+															offers.forEach((offer) => {
+																if (offer.id === value) renderOffer = offer;
+															});
+															return (
+																<Chip
+																	key={renderOffer.id}
+																	label={renderOffer.offer_code}
+																	className={classes.chip}
+																/>
+															);
+														})}
+													</div>
+												);
+											}}
+											MenuProps={MenuProps}>
+											{offers.map((offer) => (
+												<MenuItem key={offer.id} value={offer.id}>
+													<Checkbox
+														checked={form.offer_ids.indexOf(offer.id) > -1}
+													/>
+													<ListItemText primary={offer.offer_code} />
+												</MenuItem>
+											))}
+										</Select>
+									</FormControl>
+								}
 								<FuseChipSelect
 									className='mt-8 mb-16'
 									value={form.highlights.map((item) => ({

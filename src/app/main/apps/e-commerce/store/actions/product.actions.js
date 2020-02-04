@@ -39,7 +39,8 @@ export function saveProduct(data) {
 				discount: data.discount,
 				highlights: data.highlights,
 				is_verified: data.is_verified,
-				sizes: data.sizes
+				sizes: data.sizes,
+				offer_ids: data.offer_ids
 			};
 		} else {
 			postData = {
@@ -59,7 +60,8 @@ export function saveProduct(data) {
 				discount: data.discount,
 				highlights: data.highlights,
 				is_verified: data.is_verified,
-				sizes: data.sizes
+				sizes: data.sizes,
+				offer_ids: data.offer_ids
 			};
 		}
 	} else {
@@ -79,11 +81,12 @@ export function saveProduct(data) {
 			discount: data.discount,
 			highlights: data.highlights,
 			is_verified: data.is_verified,
-			sizes: data.sizes
+			sizes: data.sizes,
+			offer_ids: data.offer_ids
 		};
 	}
 
-	const request = axios.post(`http://13.235.187.206/api/products`, postData);
+	const request = axios.post(`http://localhost:8000/api/products`, postData);
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -117,9 +120,11 @@ export function updateProduct(data) {
 		discount: data.discount,
 		highlights: data.highlights,
 		is_verified: data.is_verified,
-		sizes: data.sizes
+		sizes: data.sizes,
+
+		offer_ids: data.offer_ids
 	};
-	const request = axios.put(`http://13.235.187.206/api/products`, postData);
+	const request = axios.put(`http://localhost:8000/api/products`, postData);
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -152,6 +157,7 @@ export function newProduct() {
 		highlights: [],
 		is_verified: false,
 		sizes: ["small"],
+		offer_ids: [],
 		category: {
 			category_name: ""
 		},
