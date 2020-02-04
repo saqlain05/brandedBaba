@@ -17,8 +17,14 @@ export function getOffer(id) {
 }
 
 export function saveOffer(data) {
-	console.log(data);
-	const request = axios.post(`http://13.235.187.206/api/offers`, data);
+	const request = axios.post(`http://13.235.187.206/api/offers`, {
+		offer_description: data.offer_description,
+		offer_banner_image: data.offer_banner_image,
+		offer_code: data.offer_code,
+		max_discount_amount: data.max_discount_amount,
+		offer_discount: data.offer_discount,
+		minimum_total_amount: data.minimum_total_amount
+	});
 
 	return (dispatch) =>
 		request.then((response) => {
@@ -32,8 +38,14 @@ export function saveOffer(data) {
 }
 
 export function updateOffer(data) {
-	console.log(data);
-	const request = axios.put(`http://13.235.187.206/api/offers`, data);
+	const request = axios.put(`http://13.235.187.206/api/offers/${data.id}`, {
+		offer_description: data.offer_description,
+		offer_banner_image: data.offer_banner_image,
+		offer_code: data.offer_code,
+		max_discount_amount: data.max_discount_amount,
+		offer_discount: data.offer_discount,
+		minimum_total_amount: data.minimum_total_amount
+	});
 
 	return (dispatch) =>
 		request.then((response) => {

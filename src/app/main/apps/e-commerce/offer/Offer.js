@@ -5,7 +5,8 @@ import {
 	Tabs,
 	TextField,
 	Icon,
-	Typography
+	Typography,
+	InputAdornment
 } from "@material-ui/core";
 import { orange } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/styles";
@@ -92,6 +93,7 @@ function Offer(props) {
 		) {
 			setForm(offer.data);
 		}
+		console.log(form, offer.data);
 	}, [form, offer.data, setForm]);
 
 	function handleChangeTab(event, tabValue) {
@@ -100,7 +102,7 @@ function Offer(props) {
 
 	const handleUploadChange = async (e) => {
 		const file = e.target.files[0];
-
+		console.log("Clicked");
 		if (!file) {
 			return;
 		}
@@ -118,7 +120,9 @@ function Offer(props) {
 			form.offer_description.length > 0 &&
 			form.offer_code.length > 0 &&
 			form.offer_banner_image.length > 0 &&
-			form.offer_discount === 0 &&
+			form.offer_discount > 0 &&
+			form.max_discount_amount > 0 &&
+			form.minimum_total_amount > 0 &&
 			!_.isEqual(offer.data, form)
 		);
 	}
@@ -208,7 +212,7 @@ function Offer(props) {
 									className='mt-8 mb-16'
 									error={form.offer_description === ""}
 									required
-									label='Name'
+									label='Offer Description'
 									autoFocus
 									id='offer_description'
 									name='offer_description'
@@ -222,11 +226,11 @@ function Offer(props) {
 									className='mt-8 mb-16'
 									error={form.offer_code === ""}
 									required
-									label='Name'
+									label='Offer Code'
 									autoFocus
 									id='offer_code'
 									name='offer_code'
-									value={form.offer_code}
+									value={form.offer_code.toUpperCase()}
 									onChange={handleChange}
 									variant='outlined'
 									fullWidth
@@ -235,14 +239,58 @@ function Offer(props) {
 									className='mt-8 mb-16'
 									error={form.offer_discount === ""}
 									required
-									label='Name'
+									label='Discount'
 									autoFocus
 									id='offer_discount'
 									name='offer_discount'
 									value={form.offer_discount}
 									onChange={handleChange}
 									variant='outlined'
+									type='number'
 									fullWidth
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position='start'>%</InputAdornment>
+										)
+									}}
+								/>
+								<TextField
+									className='mt-8 mb-16'
+									error={form.max_discount_amount === 0}
+									required
+									label='Maximum discount amount'
+									autoFocus
+									id='max_discount_amount'
+									name='max_discount_amount'
+									value={form.max_discount_amount}
+									onChange={handleChange}
+									variant='outlined'
+									type='number'
+									fullWidth
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position='start'>₹</InputAdornment>
+										)
+									}}
+								/>
+								<TextField
+									className='mt-8 mb-16'
+									error={form.minimum_total_amount === 0}
+									required
+									label='Minimum total amount'
+									autoFocus
+									id='minimum_total_amount'
+									name='minimum_total_amount'
+									value={form.minimum_total_amount}
+									onChange={handleChange}
+									variant='outlined'
+									type='number'
+									fullWidth
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position='start'>₹</InputAdornment>
+										)
+									}}
 								/>
 							</div>
 						)}
@@ -252,13 +300,13 @@ function Offer(props) {
 								<input
 									accept='image/*'
 									className='hidden'
-									id='button-file'
+									id='offer_banner_image'
 									type='file'
 									onChange={handleUploadChange}
 								/>
 								<div className='flex justify-center sm:justify-start flex-wrap'>
 									<label
-										htmlFor='button-file'
+										htmlFor='offer_banner_image'
 										className={clsx(
 											classes.productImageUpload,
 											"flex items-center justify-center relative w-128 h-128 rounded-4 mr-16 mb-16 overflow-hidden cursor-pointer shadow-1 hover:shadow-5"
