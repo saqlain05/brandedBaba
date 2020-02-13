@@ -14,7 +14,8 @@ import {
 	Input,
 	Checkbox,
 	ListItemText,
-	Chip
+	Chip,
+	CircularProgress
 } from "@material-ui/core";
 import { orange } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/styles";
@@ -89,6 +90,7 @@ function Product(props) {
 	const classes = useStyles(props);
 	const [tabValue, setTabValue] = useState(0);
 	const [categories, setCategories] = useState([]);
+	const [categoriesFetched, setCategoriesFetched] = useState(false);
 
 	const [offers, setOffers] = useState([]);
 	const { form, handleChange, setForm } = useForm(null);
@@ -145,20 +147,25 @@ function Product(props) {
 	}
 
 	const handleUploadChange = async (e) => {
-		const file = e.target.files[0];
-
-		if (!file) {
-			return;
+		const length = e.target.files.length;
+		let fileObject = e.target.files;
+		let urls = [];
+		for (let i = 0; i < length; i++) {
+			let file = fileObject[`${i}`];
+			if (!file) {
+				return;
+			}
+			let formData = new FormData();
+			formData.append("file", file);
+			let response = await axios.post(
+				"http://13.235.187.206/api/save-product-image",
+				formData
+			);
+			urls.push(response.data.image_url);
 		}
-		const formData = new FormData();
-		formData.append("file", file);
-		const response = await axios.post(
-			"http://13.235.187.206/api/save-product-image",
-			formData
-		);
-		setForm(
-			_.set({ ...form }, `images`, [response.data.image_url, ...form.images])
-		);
+		console.log(urls);
+		urls.concat(form.images);
+		setForm(_.set({ ...form }, `images`, urls));
 	};
 
 	function canBeSubmitted() {
@@ -176,6 +183,7 @@ function Product(props) {
 		const response = await axios.get("http://13.235.187.206/api/category");
 		const data = response.data.categories;
 		setCategories(data);
+		setCategoriesFetched(true);
 	};
 
 	const fetchOffers = async () => {
@@ -361,18 +369,22 @@ function Product(props) {
 						)}
 						{tabValue === 1 && (
 							<div>
-								<FormControl className={classes.formControl}>
-									<InputLabel id='category_id-label'>Category</InputLabel>
-									<Select
-										required
-										id='category_id'
-										name='category_id'
-										value={form.category_id}
-										onChange={handleChange}
-										className={classes.selectEmpty}>
-										{renderCategories()}
-									</Select>
-								</FormControl>
+								{categories.length > 0 ? (
+									<FormControl className={classes.formControl}>
+										<InputLabel id='category_id-label'>Category</InputLabel>
+										<Select
+											required
+											id='category_id'
+											name='category_id'
+											value={form.category_id}
+											onChange={handleChange}
+											className={classes.selectEmpty}>
+											{renderCategories()}
+										</Select>
+									</FormControl>
+								) : (
+									<CircularProgress size='large' color='secondary' />
+								)}
 								<br />
 								{form.category_id.length > 0 && categories.length > 0 ? (
 									categories.filter((cat) => {
@@ -505,6 +517,7 @@ function Product(props) {
 									className='hidden'
 									id='button-file'
 									type='file'
+									multiple='multiple'
 									onChange={handleUploadChange}
 								/>
 								<div className='flex justify-center sm:justify-start flex-wrap'>

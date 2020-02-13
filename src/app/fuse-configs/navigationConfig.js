@@ -76,16 +76,24 @@ const navigationConfig = [
 			{
 				id: "e-commerce-orders",
 				title: "Orders",
-				type: "item",
-				url: "/apps/e-commerce/orders",
-				exact: true
-			},
-			{
-				id: "e-commerce-order-detail",
-				title: "Order Detail",
-				type: "item",
-				url: "/apps/e-commerce/orders/1",
-				exact: true
+				type: "collapse",
+				icon: "receipt",
+				children: [
+					{
+						id: "e-commerce-orders",
+						title: "Orders",
+						type: "item",
+						url: "/apps/e-commerce/orders",
+						exact: true
+					},
+					{
+						id: "e-commerce-order-detail",
+						title: "Order Detail",
+						type: "item",
+						url: "/apps/e-commerce/orders/1",
+						exact: true
+					}
+				]
 			}
 		]
 	}
