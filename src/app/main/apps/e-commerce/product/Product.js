@@ -14,12 +14,16 @@ import {
 	Input,
 	Checkbox,
 	ListItemText,
-	Chip,
-	CircularProgress
+	Chip
 } from "@material-ui/core";
 import { orange } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/styles";
-import { FuseAnimate, FusePageCarded, FuseChipSelect } from "@fuse";
+import {
+	FuseAnimate,
+	FusePageCarded,
+	FuseChipSelect,
+	FuseLoading
+} from "@fuse";
 import { useForm } from "@fuse/hooks";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
@@ -90,7 +94,6 @@ function Product(props) {
 	const classes = useStyles(props);
 	const [tabValue, setTabValue] = useState(0);
 	const [categories, setCategories] = useState([]);
-	const [categoriesFetched, setCategoriesFetched] = useState(false);
 
 	const [offers, setOffers] = useState([]);
 	const { form, handleChange, setForm } = useForm(null);
@@ -183,7 +186,6 @@ function Product(props) {
 		const response = await axios.get("http://13.235.187.206/api/category");
 		const data = response.data.categories;
 		setCategories(data);
-		setCategoriesFetched(true);
 	};
 
 	const fetchOffers = async () => {
@@ -383,7 +385,7 @@ function Product(props) {
 										</Select>
 									</FormControl>
 								) : (
-									<CircularProgress size='large' color='secondary' />
+									<FuseLoading />
 								)}
 								<br />
 								{form.category_id.length > 0 && categories.length > 0 ? (
