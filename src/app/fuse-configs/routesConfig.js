@@ -5,7 +5,6 @@ import { appsConfigs } from "app/main/apps/appsConfigs";
 import { pagesConfigs } from "app/main/pages/pagesConfigs";
 import { authRoleExamplesConfigs } from "app/main/auth/authRoleExamplesConfigs";
 import { UserInterfaceConfig } from "app/main/user-interface/UserInterfaceConfig";
-import { DocumentationConfig } from "app/main/documentation/DocumentationConfig";
 import { LoginConfig } from "app/main/login/LoginConfig";
 import { LogoutConfig } from "app/main/logout/LogoutConfig";
 
@@ -14,7 +13,6 @@ const routeConfigs = [
 	...pagesConfigs,
 	...authRoleExamplesConfigs,
 	UserInterfaceConfig,
-	DocumentationConfig,
 	LoginConfig,
 	LogoutConfig
 ];
